@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router,Routes, Route, useNavigate,Link } from 'react-router-dom';
 import Papa from 'papaparse';
-import { LayoutDashboard, User, Info, FileText,Pill, Search,Send, Sparkles, Sun, Moon} from 'lucide-react';
+import { Globe,LayoutDashboard, User, Info, FileText,Pill, Search,Send, Sparkles, Sun, Moon,LogOut} from 'lucide-react';
 import type { Word } from './type';
 import Profile from './profile';
 import About from './Aboutus';
 import Policy from './policy';
 import Dashboard from '../components/Dashboard';
+import { useAuth } from '../contexts/AuthContext';
 
 
 export default function Home() {
- 
+  const { user, signOut } = useAuth();
   const [words, setWords] = useState<Word[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentWord, setCurrentWord] = useState<Word | null>(null);
@@ -83,7 +84,9 @@ export default function Home() {
       </div>
    
         <nav className="bg-teal-700 p-4 relative shadow-sm">
-          
+        <div className="flex items-center">
+             
+            </div>
                             
                               <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -148,12 +151,18 @@ export default function Home() {
                                                             className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
                                                             onClick={() => setIsMenuOpen(false)}
                                                           >
-                                                            <FileText className="h-5 w-5 text-green-600" />
+                                                            <Globe className="h-5 w-5 text-green-600" />
                                                             <div>
                                                               <p className="font-medium">Home Page</p>
                                                               <p className="text-sm text-gray-500">Go back to home page</p>
                                                             </div>
                                                           </Link>
+                                                          <button onClick={() => signOut()}
+                                                          className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3">
+                                                         <LogOut className="h-5 w-5 text-green-600" />
+                                                           Sign out
+                                                           
+                                                         </button>                        
                                   
                                 </div>
                               )}

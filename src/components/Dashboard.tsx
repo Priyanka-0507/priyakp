@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router,Routes, Route, useNavigate,Link } from 'react-router-dom';
-import { PlusCircle, Clock, LogOut, User,LayoutDashboard, Info, FileText,Pill, Search  } from 'lucide-react';
+import { Globe,PlusCircle, Clock, LogOut, User,LayoutDashboard, Info, FileText,Pill, Search  } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
+import Home from '../pages/Home';
 
 
 interface Medication {
@@ -150,7 +151,7 @@ export default function Dashboard() {
                                                         className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
                                                         onClick={() => setIsMenuOpen(false)}
                                                       >
-                                                        <FileText className="h-5 w-5 text-green-600" />
+                                                        <Globe className="h-5 w-5 text-green-600" />
                                                         <div>
                                                           <p className="font-medium">Home Page</p>
                                                           <p className="text-sm text-gray-500">Go back to home page</p>

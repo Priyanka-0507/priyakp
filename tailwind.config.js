@@ -16,6 +16,11 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         display: ['Space Grotesk', 'sans-serif'],
+      },
+      colors: {
+        'cyan': '#F5F5F5 ', // Adjust the hex codes to your gradient colors
+        'tl': '#00100F',
+        'tm':'#85B7B6'
       }
     },
   },

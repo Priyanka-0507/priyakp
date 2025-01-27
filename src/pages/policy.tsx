@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router,Routes, Route, useNavigate,Link } from 'react-router-dom';
+import {BrowserRouter as Router,Routes, Route, useNavigate,Link } from 'react-router-dom';
 import { 
   Pill, 
   ShieldCheck, 
@@ -12,7 +12,7 @@ import {
   Phone,
   Mail,
   MapPin,
-  LayoutDashboard, User, Info, FileText, Search
+  LayoutDashboard, User, Info, FileText, Search,Globe
 } from 'lucide-react';
 import Profile from './profile';
 import About from './Aboutus';
@@ -129,7 +129,7 @@ export default function Policy() {
                                                     className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
                                                     onClick={() => setIsMenuOpen(false)}
                                                   >
-                                                    <FileText className="h-5 w-5 text-green-600" />
+                                                    <Globe className="h-5 w-5 text-green-600" />
                                                     <div>
                                                       <p className="font-medium">Home Page</p>
                                                       <p className="text-sm text-gray-500">Go back to home page</p>
