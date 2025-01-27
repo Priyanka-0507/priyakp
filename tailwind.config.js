@@ -21,7 +21,10 @@ export default {
         'cyan': '#F5F5F5 ', // Adjust the hex codes to your gradient colors
         'tl': '#00100F',
         'tm':'#85B7B6'
-      }
+      },
+      backgroundImage: {
+        'custom-bg': "url('/src/pages/img.png')",
+      },
     },
   },
   plugins: [],

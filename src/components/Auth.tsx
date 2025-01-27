@@ -26,7 +26,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('https://files.oaiusercontent.com/file-Aqmy5K7fqhqEzQy9af7ASy?se=2025-01-27T16%3A34%3A25Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3Da289c09f-6b78-4882-8db5-270e3b49ed4c.webp&sig=0AEZOls6ZYlttMvzJ4xvK5UtR63s%2BueeyT4NvIR7eVI%3D')] bg-cover bg-center h-screen  flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-custom-bg bg-cover bg-center h-screen  flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       
       <div className="relative z-10">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
