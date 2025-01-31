@@ -36,7 +36,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadWords = async () => {
-      const response = await fetch('/src/data/words.csv');
+      const response = await fetch('/public/csv/words.csv');
       const csvText = await response.text();
       console.log("---------------");
       console.log(response);
