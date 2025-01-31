@@ -38,6 +38,12 @@ export default function Home() {
     const loadWords = async () => {
       const response = await fetch('/src/data/words.csv');
       const csvText = await response.text();
+      console.log("---------------");
+      console.log(response);
+      console.log("---------------");
+      console.log("---------------");
+      console.log(csvText);
+      console.log("---------------");
 
       Papa.parse(csvText, {
         header: true,
@@ -51,6 +57,7 @@ export default function Home() {
   }, []);
 
   const searchWord = () => {
+    console.log("kkkk");
     const foundWord = words.find(
       (word) => word.word.toLowerCase() === searchTerm.toLowerCase()
     );
