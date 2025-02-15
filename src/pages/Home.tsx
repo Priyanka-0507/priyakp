@@ -93,7 +93,9 @@ export default function Home() {
         if (response.ok) {
           const data = await response.json();
           console.log('OCR result:', data);
-          setOcrResult(data.extracted_text); // Update the state with the OCR result
+          const firstWord = data.extracted_text.split(' ')[0]; // Extract the first word
+          setOcrResult(firstWord); // Update the state with the first word of the OCR result
+          setSearchTerm(firstWord); // Update the search term with the first word of the OCR result
         } else {
           console.error('Error:', response.statusText);
         }
@@ -230,7 +232,7 @@ export default function Home() {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && searchWord()}
-                        placeholder="Type a word..."
+                        placeholder={ocrResult || "Type a word..."}
                         className="flex-1 px-4 py-2 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                       />
                       <button
