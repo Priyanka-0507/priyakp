@@ -20,6 +20,7 @@ export default function Home() {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
   });
+  const [ocrResult, setOcrResult] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -92,7 +93,7 @@ export default function Home() {
         if (response.ok) {
           const data = await response.json();
           console.log('OCR result:', data);
-          // Handle the OCR result here
+          setOcrResult(data.extracted_text); // Update the state with the OCR result
         } else {
           console.error('Error:', response.statusText);
         }
@@ -118,22 +119,6 @@ export default function Home() {
       </div>
 
       <nav className="bg-teal-700 p-4 relative shadow-sm">
-        <div className="flex items-center">
-          <button
-            className="p-2 text-gray-500 hover:text-blue-500 transition-colors"
-            title="Take photo"
-            onClick={handleFileSelect}
-          >
-            <Camera className="w-5 h-5" />
-          </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-          />
-        </div>
-
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="p-2 hover:bg-green-200 rounded-lg transition-colors duration-200 ease-in-out"
@@ -281,6 +266,30 @@ export default function Home() {
                         </div>
                       </div>
                     )}
+
+                    {ocrResult && (
+                      <div className="bg-yellow-50 rounded-xl p-6 shadow-sm mt-8">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">OCR Result</h2>
+                        <p className="text-gray-700">{ocrResult}</p>
+                      </div>
+                    )}
+
+                    <div className="flex justify-center mt-8">
+                      <button
+                        className="p-4 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors flex items-center gap-2"
+                        title="Take photo"
+                        onClick={handleFileSelect}
+                      >
+                        <Camera className="w-6 h-6" />
+                        <span>Attach image to recognize medicine</span>
+                      </button>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
