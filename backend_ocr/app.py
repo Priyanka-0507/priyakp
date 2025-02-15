@@ -4,8 +4,10 @@ import pytesseract
 import numpy as np
 from PIL import Image
 import io
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
@@ -23,6 +25,7 @@ def ocr():
     text = pytesseract.image_to_string(img)
 
     return jsonify({'extracted_text': text})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

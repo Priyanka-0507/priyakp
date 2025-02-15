@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
 import Papa from 'papaparse';
 import { Globe, LayoutDashboard, User, Info, FileText, Pill, Search, Send, Sparkles, Sun, Moon, LogOut, Camera } from 'lucide-react';
@@ -20,6 +20,8 @@ export default function Home() {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
   });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -67,6 +69,39 @@ export default function Home() {
     }
   };
 
+  const handleFileSelect = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log('Selected file:', file);
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/ocr', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('OCR result:', data);
+          // Handle the OCR result here
+        } else {
+          console.error('Error:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-100 via-cyan-50 to-blue-100 dark:from-gray-900 dark:via-cyan-900 dark:to-emerald-900 transition-colors duration-500">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -87,9 +122,16 @@ export default function Home() {
           <button
             className="p-2 text-gray-500 hover:text-blue-500 transition-colors"
             title="Take photo"
+            onClick={handleFileSelect}
           >
             <Camera className="w-5 h-5" />
           </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
         </div>
 
         <button
