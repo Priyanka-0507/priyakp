@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "deploy":"vite build && vite-plugin-gh-pages",
+    "deploy": "vite build && vite-plugin-gh-pages",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
-    "framer-motion": "^12.0.5",
+    "framer-motion": "^12.4.3",
     "lucide-react": "^0.344.0",
     "papaparse": "^5.4.1",
     "react": "^18.3.1",

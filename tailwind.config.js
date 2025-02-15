@@ -23,7 +23,7 @@ export default {
         'tm':'#85B7B6'
       },
       backgroundImage: {
-        'custom-bg': "url('/src/pages/img.png')",
+        'custom-bg': "url('/src/pages/img2.jpg')",
       },
     },
   },

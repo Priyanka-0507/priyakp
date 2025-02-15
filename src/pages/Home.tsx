@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import { BrowserRouter as Router,Routes, Route, useNavigate,Link } from 'react-router-dom';
 import Papa from 'papaparse';
-import { Globe,LayoutDashboard, User, Info, FileText,Pill, Search,Send, Sparkles, Sun, Moon,LogOut} from 'lucide-react';
+import { Globe,LayoutDashboard, User, Info, FileText,Pill, Search,Send, Sparkles, Sun, Moon,LogOut,Camera,Upload,Loader2} from 'lucide-react';
 import type { Word } from './type';
 import Profile from './profile';
 import About from './Aboutus';
 import Policy from './policy';
 import Dashboard from '../components/Dashboard';
 import { useAuth } from '../contexts/AuthContext';
+import { createWorker } from 'tesseract.js';
 
 
 export default function Home() {
@@ -198,7 +199,7 @@ export default function Home() {
           
               <div className="min-h-screen bg-white-100">
                 <div className="max-w-2xl mx-auto p-6">
-                  <header className="flex items-center gap-2 mb-8">
+                  <header className="flex items-center gap-2 mb-8 animate-pulse">
                     <Pill className="w-8 h-8 text-teal-600 animate-spin" />
                     <h1 className="font-display text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-400 dark:to-blue-400 animate-gradient tracking-tight">Medicine Generator</h1>
                   </header>
@@ -212,6 +213,13 @@ export default function Home() {
                       placeholder="Type a word..."
                       className="flex-1 px-4 py-2 border border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
+                     <button
+  className="p-2 text-gray-500 hover:text-blue-500 transition-colors"
+  title="Take photo"
+>
+  <Camera className="w-5 h-5" />
+</button>
+
                     <button
                       onClick={searchWord}
                       className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors flex items-center gap-2"
