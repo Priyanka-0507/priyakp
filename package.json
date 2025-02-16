@@ -11,7 +11,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
+    "@react-spring/web": "^9.7.5",
     "@supabase/supabase-js": "^2.39.7",
+    "d3-ease": "^3.0.1",
     "framer-motion": "^12.4.3",
     "lucide-react": "^0.344.0",
     "papaparse": "^5.4.1",
@@ -22,6 +25,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/d3-ease": "^3.0.2",
+    "@types/google.maps": "^3.58.1",
     "@types/papaparse": "^5.3.14",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",

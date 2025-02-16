@@ -9,6 +9,7 @@ import About from './pages/Aboutus';
 import Policy from './pages/policy';
 import Dashboard from './components/Dashboard';
 import Home from './pages/Home';
+import Maps from './pages/maps';
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -39,10 +40,8 @@ function App() {
                       
                         <Route path="/about" element={<About />} />
                         <Route path="/policy" element={<Policy />} />
-                        <Route
-                                      path="/dashboard"
-                                      element={<Dashboard /> }
-                                    />
+                        <Route path="/dashboard" element={<Dashboard /> } />
+                        <Route path="/maps" element={<Maps /> } />            
                       
           </Routes>
           <Toaster position="top-right" />

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router,Routes, Route, useNavigate,Link } from 'react-router-dom';
-import { Globe,PlusCircle, Clock, LogOut, User,LayoutDashboard, Info, FileText,Pill, Search  } from 'lucide-react';
+import { Globe,PlusCircle, Clock, LogOut, User,LayoutDashboard, Info, FileText,Pill,Trash2  } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 import Home from '../pages/Home';
+import SplitText from '../designs/Split';
+import { easeCubicOut } from 'd3-ease';
 
 
 interface Medication {
@@ -36,6 +38,9 @@ export default function Dashboard() {
     fetchMedications();
     
   }, []);
+  const handleAnimationComplete = () => {
+    console.log('Letter animation completed!');
+  };
 
   
 
@@ -52,6 +57,26 @@ export default function Dashboard() {
       setMedications(data || []);
     } catch (error) {
       toast.error('Error fetching medications');
+    }
+  };
+  const handleDeleteMedication = async (medicationId: string) => {
+    if (!window.confirm('Are you sure you want to delete this medication?')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('medications')
+        .delete()
+        .eq('id', medicationId);
+
+      if (error) throw error;
+      
+      toast.success('Medication deleted successfully');
+      fetchMedications();
+    } catch (error) {
+      console.error('Error deleting medication:', error);
+      toast.error('Error deleting medication');
     }
   };
 
@@ -166,7 +191,17 @@ export default function Dashboard() {
           
             <>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Your Medications</h2>
+              <SplitText
+  text="Your Medications"
+  className="text-2xl font-semibold text-center"
+  delay={150}
+  animationFrom={{ opacity: 0, transform: 'translate3d(0,50px,0)' }}
+  animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+  easing={easeCubicOut} // ✅ Correct, passes a function
+  threshold={0.2}
+  rootMargin="-50px"
+  onLetterAnimationComplete={handleAnimationComplete}
+/>
                 <button
                   onClick={() => setIsAddingMed(true)}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700"
@@ -271,6 +306,13 @@ export default function Dashboard() {
                         <div className="text-sm text-gray-500">
                           Next dose: {new Date(med.next_dose).toLocaleString()}
                         </div>
+                        <button
+                            onClick={() => handleDeleteMedication(med.id)}
+                            className="text-red-600 hover:text-red-800"
+                            title="Delete medication"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
                       </div>
                     </li>
                   ))}
@@ -285,6 +327,35 @@ export default function Dashboard() {
            
         </div>
       </main>
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Contact Us</h3>
+              <p className="text-gray-400">123 Medical Center Drive</p>
+              <p className="text-gray-400">Healthcare City, HC 12345</p>
+              <p className="text-gray-400">Phone: (555) 123-4567</p>
+              <p className="text-gray-400">Email: info@medicare.com</p>
+            </div>
+            <div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Emergency</h3>
+              <p className="text-gray-400">For medical emergencies, please dial 911 immediately.</p>
+              <p className="text-gray-400 mt-2">24/7 Nurse Hotline: (555) 999-8888</p>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 pt-8">
+            <div className="text-sm text-gray-400">
+              <p className="font-semibold mb-2">Medical Disclaimer:</p>
+              <p>
+                © {new Date().getFullYear()} MediCare. All rights reserved. Powered By MEDTECH.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router,Routes, Route, useNavigate,Link } from 'react-router-dom';
+import React, { useEffect, useState,useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
 import Papa from 'papaparse';
-import { Globe,LayoutDashboard, User, Info, FileText,Pill, Search,Send, Sparkles, Sun, Moon,LogOut} from 'lucide-react';
+import { Globe,LayoutDashboard, User, Info, FileText,Pill, Search, Sun, Moon,LogOut,Camera,MapPin} from 'lucide-react';
 import type { Word } from './type';
 import Profile from './profile';
 import About from './Aboutus';
 import Policy from './policy';
 import Dashboard from '../components/Dashboard';
+import Maps from './maps';
 import { useAuth } from '../contexts/AuthContext';
 
 
@@ -21,6 +22,9 @@ export default function Home() {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
   });
+  const [ocrResult, setOcrResult] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -68,6 +72,39 @@ export default function Home() {
     }
   };
 
+  const handleFileSelect = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log('Selected file:', file);
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/ocr', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('OCR result:', data);
+          setOcrResult(data.extracted_text); // Update the state with the OCR result
+        } else {
+          console.error('Error:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-100 via-cyan-50 to-blue-100 dark:from-gray-900 dark:via-cyan-900 dark:to-emerald-900 transition-colors duration-500">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -85,116 +122,124 @@ export default function Home() {
 
       <nav className="bg-teal-700 p-4 relative shadow-sm">
         <div className="flex items-center">
-             
+          
+        </div>
+
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="p-2 hover:bg-green-200 rounded-lg transition-colors duration-200 ease-in-out"
+        >
+          <LayoutDashboard className="h-6 w-6 text-teal-200" />
+        </button>
+
+        {isMenuOpen && (
+          <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-3 z-10 transform transition-all duration-200 ease-in-out">
+            <div className="px-4 py-3 border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-500 uppercase">Dashboard Menu</h3>
             </div>
-                            
-                              <button
-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                className="p-2 hover:bg-green-200 rounded-lg transition-colors duration-200 ease-in-out"
-                              >
-                                <LayoutDashboard className="h-6 w-6 text-teal-200" />
-                              </button>
-                    
-                              {isMenuOpen && (
-                                <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl py-3 z-10 transform transition-all duration-200 ease-in-out">
-                                  <div className="px-4 py-3 border-b border-gray-100">
-                                    <h3 className="text-sm font-semibold text-gray-500 uppercase">Dashboard Menu</h3>
-                                  </div>
-                                  
-                                  <Link
-                                    to="/dashboard"
-                                    className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
-                                    onClick={() => setIsMenuOpen(false)}
-                                  >
-                                    <Pill className="h-5 w-5 text-green-600" />
-                                    <div>
-                                      <p className="font-medium">Dosage Tracker</p>
-                                      <p className="text-sm text-gray-500">Track your dosage</p>
-                                    </div>
-                                  </Link>
-                                  <Link
-                                    to="/profile"
-                                    className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
-                                    onClick={() => setIsMenuOpen(false)}
-                                  >
-                                    <User className="h-5 w-5 text-green-600" />
-                                    <div>
-                                      <p className="font-medium">User Profile Details</p>
-                                      <p className="text-sm text-gray-500">View and edit your profile</p>
-                                    </div>
-                                  </Link>
-                                  <Link
-                                    to="/about"
-                                    className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
-                                    onClick={() => setIsMenuOpen(false)}
-                                  >
-                                    <Info className="h-5 w-5 text-green-600" />
-                                    <div>
-                                      <p className="font-medium">About Us</p>
-                                      <p className="text-sm text-gray-500">Learn more about our company</p>
-                                    </div>
-                                  </Link>
-                                  
-                                  <Link
-                                    to="/policy"
-                                    className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
-                                    onClick={() => setIsMenuOpen(false)}
-                                  >
-                                    <FileText className="h-5 w-5 text-green-600" />
-                                    <div>
-                                      <p className="font-medium">Our Policy</p>
-                                      <p className="text-sm text-gray-500">Review our terms and policies</p>
-                                    </div>
-                                  </Link>
-                                   <Link
-                                                            to="/"
-                                                            className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
-                                                            onClick={() => setIsMenuOpen(false)}
-                                                          >
-                                                            <Globe className="h-5 w-5 text-green-600" />
-                                                            <div>
-                                                              <p className="font-medium">Home Page</p>
-                                                              <p className="text-sm text-gray-500">Go back to home page</p>
-                                                            </div>
-                                                          </Link>
-                                                          <button onClick={() => signOut()}
-                                                          className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3">
-                                                         <LogOut className="h-5 w-5 text-green-600" />
-                                                           Sign out
-                                                           
-                                                         </button>                        
-                                  
-                                </div>
-                              )}
-                            </nav>
-    <main>
-    
-      <Routes>
-        <Route
-         path="/"
-         element={ 
-         <div className="min-h-[calc(100vh-4rem)]">
-          <header className="bg-white-100 shadow">
-          
-            <button
-      onClick={() => setDarkMode(!darkMode)}
-      className="fixed top-4 right-4 p-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg hover:scale-110 transition-all duration-200"
-      aria-label="Toggle theme"
-    >
-      {darkMode ? (
-        <Sun className="w-6 h-6 text-yellow-500" />
-      ) : (
-        <Moon className="w-6 h-6 text-emerald-600" />
-      )}
-    </button>
-          </header>
-          
-              <div className="min-h-screen bg-white-100">
-                <div className="max-w-2xl mx-auto p-6">
-                  <header className="flex items-center gap-2 mb-8">
-                    <Pill className="w-8 h-8 text-teal-600 animate-spin" />
-                    <h1 className="font-display text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-400 dark:to-blue-400 animate-gradient tracking-tight">Medicine Generator</h1>
-                  </header>
+
+            <Link
+              to="/dashboard"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Pill className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="font-medium">Dosage Tracker</p>
+                <p className="text-sm text-gray-500">Track your dosage</p>
+              </div>
+            </Link>
+            <Link
+              to="/profile"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <User className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="font-medium">User Profile Details</p>
+                <p className="text-sm text-gray-500">View and edit your profile</p>
+              </div>
+            </Link>
+            <Link
+              to="/about"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Info className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="font-medium">About Us</p>
+                <p className="text-sm text-gray-500">Learn more about our company</p>
+              </div>
+            </Link>
+
+            <Link
+              to="/policy"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FileText className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="font-medium">Our Policy</p>
+                <p className="text-sm text-gray-500">Review our terms and policies</p>
+              </div>
+            </Link>
+            <Link
+              to="/"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Globe className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="font-medium">Home Page</p>
+                <p className="text-sm text-gray-500">Go back to home page</p>
+              </div>
+            </Link>
+            <Link
+              to="/maps"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <MapPin className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="font-medium">Medicines Near Me</p>
+                <p className="text-sm text-gray-500">Available medicines near me</p>
+              </div>
+            </Link>
+            <button onClick={() => signOut()}
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 transition-colors duration-200 gap-3">
+              <LogOut className="h-5 w-5 text-green-600" />
+              Sign out
+            </button>
+          </div>
+        )}
+      </nav>
+
+      <main>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="min-h-[calc(100vh-4rem)]">
+                <header className="bg-white-100 shadow">
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="fixed top-4 right-4 p-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg hover:scale-110 transition-all duration-200"
+                    aria-label="Toggle theme"
+                  >
+                    {darkMode ? (
+                      <Sun className="w-6 h-6 text-yellow-500" />
+                    ) : (
+                      <Moon className="w-6 h-6 text-emerald-600" />
+                    )}
+                  </button>
+                </header>
+
+                <div className="min-h-screen bg-white-100">
+                  <div className="max-w-2xl mx-auto p-6">
+                    <header className="flex items-center gap-2 mb-8">
+                      <Pill className="w-8 h-8 text-teal-600 animate-spin" />
+                      <h1 className="font-display text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-400 dark:to-blue-400 animate-gradient tracking-tight">Medicine Generator</h1>
+                    </header>
 
                   <div className="flex gap-2 mb-8">
                     <input
@@ -238,6 +283,30 @@ export default function Home() {
                         </div>
                       </div>
                     )}
+
+                    {ocrResult && (
+                      <div className="bg-yellow-50 rounded-xl p-6 shadow-sm mt-8">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">OCR Result</h2>
+                        <p className="text-gray-700">{ocrResult}</p>
+                      </div>
+                    )}
+
+                    <div className="flex justify-center mt-8">
+                      <button
+                        className="p-4 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors flex items-center gap-2"
+                        title="Take photo"
+                        onClick={handleFileSelect}
+                      >
+                        <Camera className="w-6 h-6" />
+                        <span>Attach image to recognize medicine</span>
+                      </button>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -247,6 +316,7 @@ export default function Home() {
           <Route path="/about" element={<About />} />
           <Route path="/policy" element={<Policy />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/maps" element={<Maps />} />
         </Routes>
       </main>
 
